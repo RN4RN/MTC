@@ -1,0 +1,91 @@
+<?php
+session_start();
+include 'conexion.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nombre = $_POST['nombre'];
+    $clave = $_POST['clave'];
+
+    $sql = "SELECT * FROM usuarios WHERE nombre='$nombre'";
+    $resultado = $conexion->query($sql);
+
+    if ($resultado->num_rows > 0) {
+        $fila = $resultado->fetch_assoc();
+        if (password_verify($clave, $fila['clave'])) {
+            $_SESSION['nombre'] = $nombre; // Esto guarda el nombre en la sesión
+            header("Location: http://localhost/nuevo/contraseña/mapaprincipal/index.php");
+            exit();
+        }
+        
+         else {
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Contraseña incorrecta',
+                    text: 'Intenta nuevamente.',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+            </script>";
+        }
+    } else {
+        echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+        echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Usuario no encontrado',
+                text: 'Verifica tu nombre de usuario.',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+        </script>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="shortcut icon" href="telecomunicaciones0.ico" />
+    <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+    <div class="fondo"></div>
+    <div class="cabeza">
+        <header class="header">
+            <img src="https://i.postimg.cc/cHG4yWw5/LOGO-TRANSPARENTE-TRASNPORTES.png" alt="Logo" class="logo">
+            Ministerio de Transportes y Telecomunicaciones
+            <img src="https://i.postimg.cc/fLvsG9wJ/logop.png" alt="Logo" class="logo">
+        </header>
+    </div>
+
+    <div class="login-container">
+        <form class="login-form" method="POST">
+            <p class="heading">Iniciar sesión</p>
+            <p class="paragraph">Ingresa con tu cuenta</p>
+            <div class="input-group">
+                <input required placeholder="Username" name="nombre" id="nombre" type="text"/>
+            </div>
+            <div class="input-group">
+                <input required placeholder="Password" name="clave" id="password" type="password"/>
+            </div>
+            <button type="submit">Acceder</button>
+            <div class="bottom-text">
+                <p>¿No tienes una cuenta? <a href="crearcuenta.php">clic aquí</a></p>
+                <p><a href="olvidocontra.php">¿Olvidaste tu contraseña?</a></p>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        © 2025 Todos los derechos reservados | <a href="https://www.facebook.com/share/15yZx44QFM/">RNcorp</a> | <a href="terminosdeuso.php">Términos de uso</a>
+    </footer>
+</body>
+</html>
